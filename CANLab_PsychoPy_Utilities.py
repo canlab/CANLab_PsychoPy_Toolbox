@@ -177,7 +177,7 @@ def endScan(win, advanceKey='e', text=end_msg, biopacCode=end_task):
         advanceKey (str, optional): Keypress required to end the display of text and advance. Defaults to 'e'. 
         text (str, optional): Text string to display as your end scan message. Defaults to whatever is assigned to end_msg in your config.py.
     """
-    showText(win, "EndScan", text, advanceKey=advanceKey, noRecord=True. biopacCode=biopacCode)
+    showText(win, "EndScan", text, advanceKey=advanceKey, noRecord=True, biopacCode=biopacCode)
     if biopac_exists == 1:
         biopac.close()  # Close the labjack U3 device to end communication with the Biopac MP150
     win.close()  # close the window
