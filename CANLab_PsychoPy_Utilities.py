@@ -905,9 +905,6 @@ def showTextAndImg(win, name, text, imgPath, strColor='white', fontSize=.05, str
     for thisComponent in TextImageComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
-
-    if noRecord==False:
-        bids_trial={'onset': onset,'duration': t,'condition': name}        
     
     # check responses
     if TextImageKB.keys in ['', [], None]:  # No response was made
@@ -1222,7 +1219,7 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
     routineTimer.reset()
 
     if noRecord==False:
-        bids_trial={'onset': onset,'duration': globalClock.getTime(),'condition': name, 'value': sliderValue, 'rt': timeNow - Rating.tStart} 
+        bids_trial={'onset': onset,'duration': t,'condition': name, 'value': sliderValue, 'rt': timeNow - Rating.tStart} 
         return bids_trial
     else:
         return
