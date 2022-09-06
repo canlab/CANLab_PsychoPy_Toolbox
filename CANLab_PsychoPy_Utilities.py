@@ -182,7 +182,6 @@ def endScan(win, advanceKey='e', text=end_msg, biopacCode=end_task):
         biopac.close()  # Close the labjack U3 device to end communication with the Biopac MP150
     win.close()  # close the window
     core.quit()
-    return
 
 def showText(win, name, text, strColor='white', fontSize=.05, strPos=(0, 0), time=None, advanceKey='space', biopacCode=None, noRecord=False):
     """Show some text, press a key to advance or wait a certain amount of time. By default returns the onset and timings as a dictionary to be concatenated to your BIDS datafile, but this is optional. 
