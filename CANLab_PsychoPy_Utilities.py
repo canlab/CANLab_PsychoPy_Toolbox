@@ -287,9 +287,9 @@ def showText(win, name, text, strColor='white', fontSize=.05, strPos=(0, 0), tim
             TextKB.status = STARTED
             # keyboard checking is just starting
             waitOnFlip = True
-            win.callOnFlip(print, "Cueing Off All Biopac Channels")            
             win.callOnFlip(print, "Showing "+name)
             if biopac_exists == 1 and biopacCode is not None:
+                win.callOnFlip(print, "Cueing Off All Biopac Channels")  
                 win.callOnFlip(biopac.setData, biopac, 0)
                 win.callOnFlip(print, "Cueing Biopac Channel: " + str(biopacCode))
                 win.callOnFlip(biopac.setData, biopac, biopacCode)
@@ -468,16 +468,16 @@ def showImg(win, name, imgPath, imgPos=[0,0], imgSize=(.05, .05), time=None, adv
                 ImageKB.frameNStop = frameN  # exact frame index
                 win.timeOnFlip(ImageKB, 'tStopRefresh')  # time at next scr refresh
                 continueRoutine = False
-            # keyboard checking is just starting
-            waitOnFlip = True
-            win.callOnFlip(print, "Cueing Off All Biopac Channels")            
-            win.callOnFlip(print, "Showing "+name)
-            if biopac_exists == 1 and biopacCode is not None:
-                win.callOnFlip(biopac.setData, biopac, 0)
-                win.callOnFlip(print, "Cueing Biopac Channel: " + str(biopacCode))
-                win.callOnFlip(biopac.setData, biopac, biopacCode)
-            win.callOnFlip(ImageKB.clock.reset)  # t=0 on next screen flip
-            win.callOnFlip(ImageKB.clearEvents, eventType='keyboard')  # clear events on next screen flip
+                # keyboard checking is just starting
+                waitOnFlip = True
+                win.callOnFlip(print, "Showing "+name)
+                if biopac_exists == 1 and biopacCode is not None:
+                    win.callOnFlip(print, "Cueing Off All Biopac Channels")  
+                    win.callOnFlip(biopac.setData, biopac, 0)
+                    win.callOnFlip(print, "Cueing Biopac Channel: " + str(biopacCode))
+                    win.callOnFlip(biopac.setData, biopac, biopacCode)
+                win.callOnFlip(ImageKB.clock.reset)  # t=0 on next screen flip
+                win.callOnFlip(ImageKB.clearEvents, eventType='keyboard')  # clear events on next screen flip
         if ImageKB.status == STARTED and not waitOnFlip:
             if advanceKey is not None:            
                 theseKeys = ImageKB.getKeys(keyList=advanceKey, waitRelease=False)
@@ -630,9 +630,9 @@ def showMovie(win, movie, name=None, biopacCode=None, noRecord=False):
             win.timeOnFlip(movie, 'tStartRefresh')  # time at next scr refresh
             movie.setAutoDraw(True)
             
-            win.callOnFlip(print, "Cueing Off All Biopac Channels")            
             win.callOnFlip(print, "Showing "+name)
             if biopac_exists == 1 and biopacCode is not None:
+                win.callOnFlip(print, "Cueing Off All Biopac Channels")  
                 win.callOnFlip(biopac.setData, biopac, 0)
                 win.callOnFlip(print, "Cueing Biopac Channel: " + str(biopacCode))
                 win.callOnFlip(biopac.setData, biopac, biopacCode)
@@ -847,9 +847,9 @@ def showTextAndImg(win, name, text, imgPath, strColor='white', fontSize=.05, str
 
             # keyboard checking is just starting
             waitOnFlip = True
-            win.callOnFlip(print, "Cueing Off All Biopac Channels")            
             win.callOnFlip(print, "Showing "+name)
             if biopac_exists == 1 and biopacCode is not None:
+                win.callOnFlip(print, "Cueing Off All Biopac Channels") 
                 win.callOnFlip(biopac.setData, biopac, 0)
                 win.callOnFlip(print, "Cueing Biopac Channel: " + str(biopacCode))
                 win.callOnFlip(biopac.setData, biopac, biopacCode)
@@ -1108,9 +1108,9 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
             Rating.frameNStart = frameN  # exact frame index
             Rating.tStart = t  # local t and not account for scr refresh
             Rating.tStartRefresh = tThisFlipGlobal  # on global time
-            win.callOnFlip(print, "Cueing Off All Biopac Channels")            
             win.callOnFlip(print, "Showing "+name)
             if biopac_exists == 1 and biopacCode is not None:
+                win.callOnFlip(print, "Cueing Off All Biopac Channels") 
                 win.callOnFlip(biopac.setData, biopac, 0)
                 win.callOnFlip(print, "Cueing Biopac Channel: " + str(biopacCode))
                 win.callOnFlip(biopac.setData, biopac, biopacCode)
