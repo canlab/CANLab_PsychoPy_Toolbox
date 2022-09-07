@@ -987,6 +987,7 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
         flipHoriz=False, flipVert=False,
         texRes=512, interpolate=True, depth=0.0)
     if type=='binary':
+        RatingAnchors.pos=(0,0)
         RatingAnchors.size=(1, .25)
 
     RatingPrompt = visual.TextStim(win, name=name, 
