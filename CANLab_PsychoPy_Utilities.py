@@ -1001,7 +1001,8 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
 
     # ------Prepare to start Routine "Rating"-------
     continueRoutine = True
-    routineTimer.add(time)
+    if time is not None:
+        routineTimer.add(time)
     # update component parameters for each repeat
     # keep track of which components have finished
     RatingMouse = event.Mouse(win=win, visible=False) # Re-initialize RatingMouse
@@ -1102,7 +1103,7 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
             win.callOnFlip(RatingMouse.clickReset) # t=0 on next screen flip
             prevButtonState = RatingMouse.getPressed()  # if button is down already this ISN'T a new click
         if RatingMouse.status == STARTED:  # only update if started and not finished!
-            if tThisFlipGlobal > RatingMouse.tStartRefresh + time-frameTolerance:
+            if time is not None and tThisFlipGlobal > RatingMouse.tStartRefresh + time-frameTolerance:
                 # keep track of stop time/frame for later
                 RatingMouse.tStop = t  # not accounting for scr refresh
                 RatingMouse.frameNStop = frameN  # exact frame index
@@ -1136,7 +1137,7 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
             Rating.setAutoDraw(True)
         if Rating.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
-            if tThisFlipGlobal > Rating.tStartRefresh + time-frameTolerance:
+            if time is not None and tThisFlipGlobal > Rating.tStartRefresh + time-frameTolerance:
                 # keep track of stop time/frame for later
                 Rating.tStop = t  # not accounting for scr refresh
                 Rating.frameNStop = frameN  # exact frame index
@@ -1154,7 +1155,7 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
                 BlackTriangle.setAutoDraw(True)
             if BlackTriangle.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > BlackTriangle.tStartRefresh + time-frameTolerance:
+                if time is not None and tThisFlipGlobal > BlackTriangle.tStartRefresh + time-frameTolerance:
                     # keep track of stop time/frame for later
                     BlackTriangle.tStop = t  # not accounting for scr refresh
                     BlackTriangle.frameNStop = frameN  # exact frame index
@@ -1171,7 +1172,7 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
             RatingAnchors.setAutoDraw(True)
         if RatingAnchors.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
-            if tThisFlipGlobal > RatingAnchors.tStartRefresh + time-frameTolerance:
+            if time is not None and tThisFlipGlobal > RatingAnchors.tStartRefresh + time-frameTolerance:
                 # keep track of stop time/frame for later
                 RatingAnchors.tStop = t  # not accounting for scr refresh
                 RatingAnchors.frameNStop = frameN  # exact frame index
@@ -1188,7 +1189,7 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
             RatingPrompt.setAutoDraw(True)
         if RatingPrompt.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
-            if tThisFlipGlobal > RatingPrompt.tStartRefresh + time-frameTolerance:
+            if time is not None and tThisFlipGlobal > RatingPrompt.tStartRefresh + time-frameTolerance:
                 # keep track of stop time/frame for later
                 RatingPrompt.tStop = t  # not accounting for scr refresh
                 RatingPrompt.frameNStop = frameN  # exact frame index
