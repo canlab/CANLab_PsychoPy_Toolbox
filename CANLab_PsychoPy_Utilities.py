@@ -183,7 +183,11 @@ def endScan(win, advanceKey='e', text=end_msg, biopacCode=end_task):
     win.close()  # close the window
     core.quit()
 
-def wait(time=None, advanceKey=None):
+def wait(name, time=None, advanceKey=None, noRecord=False):
+    if noRecord==False:
+        global fmriStart
+        onset = globalClock.getTime() - fmriStart 
+    
     continueRoutine=True
     while continueRoutine == True:
         timer = core.CountdownTimer()
@@ -193,6 +197,11 @@ def wait(time=None, advanceKey=None):
                 break
             continue
         continueRoutine = False
+    if noRecord==False:
+        bids_trial={'onset': onset, 'duration': globalClock.getTime()-(onset+fmriStart), 'condition': name}
+        return bids_trial    
+    else:
+        return
 
 def showText(win, name, text, strColor='white', fontSize=.05, strPos=(0, 0), time=None, advanceKey='space', biopacCode=None, noRecord=False):
     """Show some text, press a key to advance or wait a certain amount of time. By default returns the onset and timings as a dictionary to be concatenated to your BIDS datafile, but this is optional. 
@@ -936,7 +945,7 @@ unipolar_verts = [(sliderMin, .2), # left point
             (sliderMax, .2),     # right point
             (sliderMin, -.2)]   # bottom-point, # bottom-point
 
-def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, biopacCode=None, noRecord=False):
+def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, biopacCode=None, noRecord=False, nofMRI=False):
     """Show a binary, unipolar, or bipolar rating scale, mouseclick to submit response or wait a certain amount of time. By default returns the onset and timings as a dictionary to be concatenated to your BIDS datafile, but this is optional. 
        You are responsible for your own word-wrapping! Use \n judiciously. 
        Warning: Either 'time' or 'advanceKey' should be initialized, or you will be stuck and you need to press ['esc'].
@@ -950,6 +959,7 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
         time (int, optional): Time to display the rating scale on screen in seconds. Defaults to 5 seconds.
         biopacCode (int, optional): Integer representing the 8-bit digital channel to toggle for biopac Acqknowledge Software. Defaults to None.
         noRecord (bool, optional): Don't return the Dictionary of onset and duration. Defaults to False.
+        nofMRI (bool, optional): Don't look for onset or duration times. Defaults to False.
 
     Raises:
         Exception: Type exception if string type specified is not 'binary', 'unipolar', or 'bipolar'.
@@ -1040,7 +1050,7 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
 
     # -------Run Routine "Rating"-------
     # Record onset time
-    if noRecord==False:
+    if noRecord==False | nofMRI==False:
         global fmriStart
         onset = globalClock.getTime() - fmriStart
 
@@ -1237,8 +1247,12 @@ def showRatingScale(win, name, questionText, imgPath, type="bipolar", time=5, bi
     routineTimer.reset()
 
 
-    if noRecord==False:
-        bids_trial={'onset': onset,'duration': t,'condition': name, 'value': sliderValue, 'rt': rt, 'biopac_channel': biopacCode} 
-        return bids_trial
-    else:
-        return
+    if noRecord==False:  
+        if nofMRI==False:
+            bids_trial={'onset': onset,'duration': t,'condition': name, 'value': sliderValue, 'rt': rt, 'biopac_channel': biopacCode} 
+            return bids_trial
+        if nofMRI==True:
+            bids_trial={'onset': None,'duration': None,'condition': name, 'value': sliderValue, 'rt': rt, 'biopac_channel': biopacCode} 
+            return bids_trial
+
+    return
