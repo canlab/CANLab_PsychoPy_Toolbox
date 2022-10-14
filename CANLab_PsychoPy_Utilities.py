@@ -38,7 +38,8 @@ except ImportError:
 import random
 from datetime import datetime
 
-from WASABI_config import *
+from CANLAB_PsychoPy_Config import *
+
 
 def subjectInfoBox(name, expInfo=None):
     """Show a dialog box asking for subject information with [OK] and [Cancel] buttons.
@@ -180,6 +181,7 @@ def endScan(win, advanceKey='e', text=end_msg, biopacCode=end_task):
     showText(win, "EndScan", text, advanceKey=advanceKey, noRecord=True, biopacCode=biopacCode)
     if biopac_exists == 1:
         biopac.close()  # Close the labjack U3 device to end communication with the Biopac MP150
+  
     win.close()  # close the window
     core.quit()
 

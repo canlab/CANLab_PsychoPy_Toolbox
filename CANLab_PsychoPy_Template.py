@@ -52,7 +52,7 @@ from datetime import datetime
 
 # The critical imports:
 from CANLab_PsychoPy_Utilities import *
-from CANlab_PsychoPy_Config import *
+from CANLab_PsychoPy_Config import *
 
 __author__ = "Your Name"
 __version__ = "1.0.0"
@@ -196,7 +196,17 @@ if biopac_exists:
 """
 showText(win, "Instructions", InstructionText, noRecord=True)
 
+if eyetracker_exists==1:
+    calibrateEyeTracker(win, el_tracker, eyetrackerCalibration)
+
 for runs in range(totalRuns):
+    if eyetracker_exists==1:
+        startEyetracker(el_tracker, sourceEDF, destinationEDF, eyetrackerCode)
+
+        sourceEDF_filename = "%06d-%s.EDF" % (int(expInfo['DBIC Number']), runs)
+        destinationEDF = os.path.join(sub_dir, '%s.EDF' % runs)
+        sourceEDF = setupEyetrackerFile(el_tracker, sourceEDF_filename)
+
     ## Here's an example of how you might delineate a multi-condition study.
     if runs in [0,1]:
         ConditionName="First-Half"
@@ -297,6 +307,9 @@ for runs in range(totalRuns):
     bids_data_filename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, bodySites[runs].replace(" ", "").lower(), str(runs+1))
     bids_data.to_csv(bids_data_filename, sep="\t")
     bids_data=pd.DataFrame(columns=varNames) # Clear it out for a new file.
+
+    if eyetracker_exists==1:
+        stopEyeTracker(el_tracker, sourceEDF, destinationEDF, biopacCode=eyetrackerCode)
 
     """
     18. End of Run, Wait for Experimenter instructions to begin next run
