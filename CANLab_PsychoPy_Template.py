@@ -50,6 +50,8 @@ except ImportError:
 import random
 from datetime import datetime
 
+import pylink
+
 # The critical imports:
 from CANLab_PsychoPy_Utilities import *
 from CANLab_PsychoPy_Config import *
@@ -184,8 +186,6 @@ PresentText = "The thoughts I experienced during the last scan pertained to the 
 
 cueImg="path-to-cue-img.png"
 
-# If Preloading Movie, this is where it could go
-movie=preloadMovie(win, "inscapes-movie", "path-to-movie.mov")
 
 if biopac_exists:
     biopac.setData(biopac, 0)
@@ -194,88 +194,43 @@ if biopac_exists:
 """
 6. Welcome Instructions
 """
-showText(win, "Instructions", InstructionText, noRecord=True)
+# showText(win, "Instructions", InstructionText, noRecord=True)
 
-if eyetracker_exists==1:
-    calibrateEyeTracker(win, el_tracker, eyetrackerCalibration)
+# if eyetracker_exists==1:
+#     sourceEDF_filename = "S%dR%s.EDF" % (int(expInfo['DBIC Number']), 'test')
+#     # Sourcename can only be 8 characters, alphanumeric or underscore
+#     sourceEDF = setupEyetrackerFile(el_tracker, sourceEDF_filename)
+#     calibrateEyeTracker(win, el_tracker, eyetrackerCalibration)
+#     # This allows you to control the eyetracker software!
 
 for runs in range(totalRuns):
+    el_tracker = pylink.EyeLink("100.1.1.1")
     if eyetracker_exists==1:
+        # filename can't be more than 8 characters long
+        # sourceEDF_filename = "S%dR%d.EDF" % (int(expInfo['DBIC Number']), runs+1)
+        sourceEDF_filename = "test.EDF"
+        sourceEDF = "1.EDF"
+        # sourceEDF = setupEyetrackerFile(el_tracker, sourceEDF_filename)
+
+        try:
+            el_tracker.openDataFile(sourceEDF)
+        except RuntimeError as err:
+            print('EYETRACKER ERROR:', err)
+            # close the link if we have one open
+            if el_tracker.isConnected():
+                el_tracker.close()
+            core.quit()
+
+
+        destinationEDF = os.path.join(sub_dir, "S%dR%d.EDF" % (int(expInfo['DBIC Number']), runs+1))
         startEyetracker(el_tracker, sourceEDF, destinationEDF, eyetrackerCode)
-
-        sourceEDF_filename = "%06d-%s.EDF" % (int(expInfo['DBIC Number']), runs)
-        destinationEDF = os.path.join(sub_dir, '%s.EDF' % runs)
-        sourceEDF = setupEyetrackerFile(el_tracker, sourceEDF_filename)
-
-    ## Here's an example of how you might delineate a multi-condition study.
-    if runs in [0,1]:
-        ConditionName="First-Half"
-        temperature='48'
-    if runs in [2,3]:
-        ConditionName="Second-Half"
-        temperature='45'
         
-    thermodeCommand=thermode_temp2program[temperature]
+
 
     """
     7. Start Scanner
     """
     fmriStart=confirmRunStart(win)
-
-    """
-    8. Start Trial Loop
-    """
-    for r in range(totalTrials): # 16 repetitions
-        """
-        11. Show Heat Cue
-        """
-        # Try to s elect Medoc Thermal Program
-        if thermode_exists == 1:
-            sendCommand('select_tp', thermodeCommand)
-
-        # Need a biopac code
-        bids_data=bids_data.append(showImg(win, "Cue", imgPath=cueImg, time=2, biopacCode=cue, ignore_index=True))
-
-        """ 
-        9. Pre-Heat Fixation Cross
-        """
-        jitter1 = random.choice([4, 6, 8])
-        if debug==1:
-            jitter1=1
-
-        bids_data=bids_data.append(showFixation(win, "Pre-Jitter", time=jitter1, biopacCode=prefixation), ignore_index=True)
-
-        """ 
-        10. Heat-Trial Fixation Cross
-        """
-        if thermode_exists == 1:
-            sendCommand('trigger') # Trigger the thermode
-        bids_data=bids_data.append(showFixation(win, "Heat "+temperature, time=stimtrialTime, biopacCode=heat), ignore_index=True)
-
-        """
-        11. Post-Heat Fixation Cross
-        """
-        if debug==1:
-            jitter2=1
-        else:
-            jitter2 = random.choice([5,7,9])
-        bids_data=bids_data.append(showFixation(win, "Mid-Jitter", time=jitter2, biopacCode=midfixation), ignore_index=True)
-
-        """
-        12. Begin post-trial self-report questions
-        """        
-        rating_sound.play() # Alert participants to make ratings.
-        bids_data=bids_data.append(showRatingScale(win, "PainBinary", painText, os.sep.join([stimuli_dir,"ratingscale","YesNo.png"]), type="binary", time=ratingTime, biopacCode=pain_binary), ignore_index=True)
-        bids_data=bids_data.append(showRatingScale(win, "IntensityRating", trialIntensityText, os.sep.join([stimuli_dir,"ratingscale","intensityScale.png"]), type="unipolar", time=ratingTime, biopacCode=trialIntensity_rating), ignore_index=True)
-
-        """
-        13. Post-Question jitter
-        """
-        if debug==1:
-            jitter3=1
-        else:
-            jitter3 = random.choice([5,7,9])
-        bids_data=bids_data.append(showFixation(win, "Post-Q-Jitter", time=jitter2, biopacCode=postfixation), ignore_index=True)
 
     """
     14. Begin post-run self-report questions
@@ -298,18 +253,50 @@ for runs in range(totalRuns):
     bids_data=bids_data.append(showRatingScale(win, "PresentRating", PresentText, os.sep.join([stimuli_dir,"ratingscale","PresentScale.png"]), type="bipolar", time=ratingTime, biopacCode=present_rating), ignore_index=True)
     rating_sound.stop() # Stop the sound so it can be played again.
 
+    if eyetracker_exists==1:
+        # stopEyeTracker(el_tracker, sourceEDF, destinationEDF, biopacCode=eyetrackerCode)
+
+        if el_tracker.isConnected():
+            # Terminate the current trial first if the task terminated prematurely
+            error = el_tracker.isRecording()
+            # if error == pylink.TRIAL_OK:
+            #     abort_trial()
+
+            # Put tracker in Offline mode
+            el_tracker.setOfflineMode()
+
+            # Clear the Host PC screen and wait for 500 ms
+            el_tracker.sendCommand('clear_screen 0')
+            pylink.msecDelay(500)
+
+            # el_tracker = pylink.getEYELINK()
+
+            if el_tracker.isConnected():
+                # Close the edf data file on the Host
+                el_tracker.closeDataFile()
+
+                #### SHOULD I WAIT HERE? ####
+
+                # Download the EDF data file from the Host PC to a local data folder
+                # parameters: source_file_on_the_host, destination_file_on_local_drive
+                # local_edf = os.path.join(sub_dir, '%s.EDF' % expInfo['run'])
+                try:
+                    # source: edf_file
+                    el_tracker.receiveDataFile(sourceEDF, destinationEDF)
+                except RuntimeError as error:
+                    print('ERROR:', error)
+
+
     """
     15. Save data into .TSV formats and Tying up Loose Ends
     """ 
     # Append any constants to the entire run
-    bids_data['phase']=ConditionName
-    bids_data['temperature']=temperature
-    bids_data_filename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_acq-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, bodySites[runs].replace(" ", "").lower(), str(runs+1))
+    bids_data_filename = sub_dir + os.sep + u'sub-SID%06d_ses-%02d_task-%s_run-%s_events.tsv' % (int(expInfo['DBIC Number']), int(expInfo['session']), expName, str(runs+1))
     bids_data.to_csv(bids_data_filename, sep="\t")
     bids_data=pd.DataFrame(columns=varNames) # Clear it out for a new file.
 
-    if eyetracker_exists==1:
-        stopEyeTracker(el_tracker, sourceEDF, destinationEDF, biopacCode=eyetrackerCode)
+    el_tracker.close()
+
 
     """
     18. End of Run, Wait for Experimenter instructions to begin next run

@@ -38,7 +38,7 @@ except ImportError:
 import random
 from datetime import datetime
 
-from CANLAB_PsychoPy_Config import *
+from CANLab_PsychoPy_Config import *
 
 
 def subjectInfoBox(name, expInfo=None):

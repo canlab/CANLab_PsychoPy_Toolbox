@@ -5,9 +5,6 @@ CANLab PsychoPy Configuration File
 Michael Sun, Ph.D.
 
 
-"""
-
-"""
 1. Import Libraries
 """
 
@@ -46,12 +43,12 @@ from datetime import datetime
 2. Global Variable Configurations
 """
 
-debug = 1
+debug = 0
 autorespond = 1
 # Device togglers
-biopac_exists = 0
+biopac_exists = 1
 thermode_exists = 0
-eyetracker_exists = 0
+eyetracker_exists = 1
 
 endExpNow = False  # flag for 'escape' or other condition => quit the exp
 frameTolerance = 0.001  # how close to onset before 'same' frame
@@ -306,7 +303,10 @@ if eyetracker_exists == 1:
         if biopac_exists:
             biopac.setData(biopac, 0)
             biopac.setData(biopac, biopacCode) # Start demarcation of the T1 task in Biopac Acqknowledge
+
         el_tracker.doTrackerSetup()
+        # You can do fancy stuff with this if you press Enter and click the mouse. Otherwise you will want to press C, V, and O to start the scan.
+
         if biopac_exists:
             biopac.setData(biopac, 0)
     
@@ -367,7 +367,7 @@ if eyetracker_exists == 1:
                 print('ERROR:', error)
 
             # Close the link to the tracker.
-            el_tracker.close()
+            # el_tracker.close()
 
     def terminate_eyelink(pylink, el_tracker, source, destination):
         """ Terminate the task gracefully and retrieve the EDF data file

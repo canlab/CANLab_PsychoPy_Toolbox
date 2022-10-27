@@ -56,7 +56,7 @@ class EyeLinkCoreGraphicsPsychoPy(pylink.EyeLinkCustomDisplay):
 
         # Calibration background color and target color
         self._backgroundColor = win.color
-        self._foregroundColor = 'black'
+        self._foregroundColor = 'white'
 
         # Get the major version # for PsychoPy, from version 2021.1.4
         # The major version is the year of release
